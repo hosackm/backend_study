@@ -10,7 +10,7 @@ def index():
     return render_template("rot13.html", text=text)
 
 
-@app.route("/submit", methods=["POST"])
+@app.route("/", methods=["POST"])
 def submit():
     text = codecs.encode(request.form.get("text", ""), "rot13")
     return redirect(url_for("index", text=text))
