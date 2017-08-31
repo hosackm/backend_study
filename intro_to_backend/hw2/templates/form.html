@@ -6,7 +6,7 @@
       Username:
     </label>
     {% if errors.username %}
-      <input type="text" name="username" value="{{errors.username}}">
+      <input type="text" name="username" value="{{params.username}}">
       <span style="color: red">That's not a valid username.</span>
     {% else %}
       <input type="text" name="username">
@@ -47,7 +47,7 @@
      Email (optional):
     </label>
     {% if errors.email %}
-      <input type="text" name="email" value="{{errors.email}}">
+      <input type="text" name="email" value="{{params.email}}">
       <span style="color: red">That's not a valid email.</span>
     {% else %}
       <input type="text" name="email">

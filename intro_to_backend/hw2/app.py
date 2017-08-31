@@ -37,19 +37,19 @@ def submit():
     verify = request.form["verify"]
     email = request.form["email"]
 
-    # validate each entry. REFACTOR ME PLEASE!
-    validations = {}
-    if not validate_username(username):
-        validations["username"] = username
-    if not validate_password(password):
-        validations["password"] = verify
-    if not validate_verify(password, verify):
-        validations["verify"] = verify
-    if not validate_email(email):
-        validations["email"] = email
+    # validate each entry
+    errors = {}
+    validation_functions = [
+        ("username", validate_username, [username,]),
+        ("password", validate_password, [password,]),
+        ("verify", validate_verify, [password, verify]),
+        ("email", validate_email, [email])]
+    for key, func, args in validation_functions:
+        if not func(*args):
+            errors[key] = True
 
-    if validations:
-        return render_template("form.html", errors=validations)
+    if errors:
+        return render_template("form.html", errors=errors, params={"username": username, "email": email})
     else:
         print("redirecting with:", username)
         return redirect(url_for("success", username=username))
@@ -80,7 +80,7 @@ def validate_verify(passwd, verifypasswd):
 
 def validate_email(email=""):
     """
-    Return True if valid email
+    Return True if valid email or no email. False otherwise
     """
     if email:
         email_re = re.compile("^[\S]+@[\S]+.[\S]+$")
