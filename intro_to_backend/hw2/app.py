@@ -12,7 +12,7 @@ def index():
     errors = {
         "username": request.args.get("username"),
         "password": request.args.get("password"),
-        "verification_password": request.args.get("verification_password"),
+        "verify": request.args.get("verify"),
         "email": request.args.get("email")
     }
 
@@ -34,7 +34,7 @@ def submit():
     # get the values from the form
     username = request.form["username"]
     password = request.form["password"]
-    verification_password = request.form["verification_password"]
+    verify = request.form["verify"]
     email = request.form["email"]
 
     # validate each entry. REFACTOR ME PLEASE!
@@ -42,14 +42,14 @@ def submit():
     if not validate_username(username):
         validations["username"] = username
     if not validate_password(password):
-        validations["password"] = verification_password
-    if not validate_verification_password(password, verification_password):
-        validations["verification_password"] = verification_password
+        validations["password"] = verify
+    if not validate_verify(password, verify):
+        validations["verify"] = verify
     if not validate_email(email):
         validations["email"] = email
 
     if validations:
-        return redirect(url_for("index", **validations))
+        return render_template("form.html", errors=validations)
     else:
         print("redirecting with:", username)
         return redirect(url_for("success", username=username))
@@ -71,7 +71,7 @@ def validate_password(passwd):
     return pass_re.match(passwd) is not None
 
 
-def validate_verification_password(passwd, verifypasswd):
+def validate_verify(passwd, verifypasswd):
     """
     Return True if passwd matches verifypasswd
     """
