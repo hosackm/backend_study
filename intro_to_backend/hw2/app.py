@@ -12,7 +12,7 @@ def index():
     errors = {
         "username": request.args.get("username"),
         "password": request.args.get("password"),
-        "verification_password": request.args.get("verification_password"),
+        "verify": request.args.get("verify"),
         "email": request.args.get("email")
     }
 
@@ -34,22 +34,22 @@ def submit():
     # get the values from the form
     username = request.form["username"]
     password = request.form["password"]
-    verification_password = request.form["verification_password"]
+    verify = request.form["verify"]
     email = request.form["email"]
 
-    # validate each entry. REFACTOR ME PLEASE!
-    validations = {}
-    if not validate_username(username):
-        validations["username"] = username
-    if not validate_password(password):
-        validations["password"] = verification_password
-    if not validate_verification_password(password, verification_password):
-        validations["verification_password"] = verification_password
-    if not validate_email(email):
-        validations["email"] = email
+    # validate each entry
+    errors = {}
+    validation_functions = [
+        ("username", validate_username, [username,]),
+        ("password", validate_password, [password,]),
+        ("verify", validate_verify, [password, verify]),
+        ("email", validate_email, [email])]
+    for key, func, args in validation_functions:
+        if not func(*args):
+            errors[key] = True
 
-    if validations:
-        return redirect(url_for("index", **validations))
+    if errors:
+        return render_template("form.html", errors=errors, params={"username": username, "email": email})
     else:
         print("redirecting with:", username)
         return redirect(url_for("success", username=username))
@@ -71,7 +71,7 @@ def validate_password(passwd):
     return pass_re.match(passwd) is not None
 
 
-def validate_verification_password(passwd, verifypasswd):
+def validate_verify(passwd, verifypasswd):
     """
     Return True if passwd matches verifypasswd
     """
@@ -80,7 +80,7 @@ def validate_verification_password(passwd, verifypasswd):
 
 def validate_email(email=""):
     """
-    Return True if valid email
+    Return True if valid email or no email. False otherwise
     """
     if email:
         email_re = re.compile("^[\S]+@[\S]+.[\S]+$")
