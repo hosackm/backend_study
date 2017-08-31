@@ -32,13 +32,19 @@ There are three types of pages in this blog.
 
 All three should share the header of the blog.  Each of them will have its own content.
 
-       base.html                 submit.html               post.html
-    +--------------+           +--------------+         +--------------+
-    | <--Header--> |           | extends base |         | extends base |
-    +--------------|           +--------------+         +--------------+
-    |{%            |           |    Form      |         |    Title     |
-    | Empty Content|           |   ------     |         +--------------+
-    |     Block    |           |   ------     |         |     Post     |
-    |            %}|           |  [ submit ]  |         |   ------- -  |
-    +--------------+           |              |         |   -----  --  |
-                               +--------------+         +--------------+
+       base.html          welcome.html         submit.html               post.html
+    +--------------+    +--------------+     +--------------+         +--------------+
+    | <--Header--> |    | extends base |     | extends base |         | extends base |
+    +--------------|    +--------------+     +--------------+         +--------------+
+    |{%            |    |   Title 1    |     |    Form      |         |    Title     |
+    | Empty Content|    +--------------|     |   ------     |         +--------------+
+    |     Block    |    |    Post 1    |     |   ------     |         |     Post     |
+    |            %}|    |              |     |  [ submit ]  |         |   ------- -  |
+    +--------------+    |     .....    |     |              |         |   -----  --  |
+                        +--------------+     +--------------+         +--------------+
+                        |    Title n   |
+                        +--------------+
+                        |    Post n    |
+                        |              |
+                        |              |
+                        +--------------+

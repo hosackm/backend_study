@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Title Row -->
+<div class="row">
+  <div class="col-md-8">
+    <h1>{{post.title}}</h1>
+  </div>
+</div>
+
+<!-- Created Date Row -->
+<div class="row">
+  <div class="col-md-3">
+    <h4>Created: {{post.date}}</h4>
+  </div>
+</div>
+
+<!-- Post Content -->
+<div class="row">
+  <div class="col-md-8">
+    {{post.content}}
+  </div>
+</div>
+{% endblock %}
