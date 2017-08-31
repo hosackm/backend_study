@@ -2,13 +2,24 @@
 
 {% block content %}
 <form action="/submit" method="POST">
-  <div class="form-group">
+  <!-- Title Input -->
+  <div class="form-group {% if errors.title %}has-error{% endif %}">
     <label for="inputTitle">Title</label>
-    <input type="text" class="form-control" name="title" id="inputTitle" aria-describedby="titleHelp" placeholder="Enter title">
+
+    <!-- Text Input Box -->
+    <input type="text" class="form-control" name="subject" id="inputTitle"
+           aria-describedby="titleHelp" placeholder="Enter title"
+           value="{% if params.title %}{{params.title}}{% else %}{% endif %}">
   </div>
-  <div class="form-group">
+
+  <div class="form-group {% if errors.content %}has-error{% endif %}">
     <label for="inputContent">Content</label>
-    <textarea class="form-control" name="content" id="inputContent" rows="3"></textarea>
+    <textarea class="form-control" name="content" id="inputContent" rows="3">{% if params.content %}{{params.content}}{%endif%}</textarea>
+    {% if errors.title or errors.content %}
+    <div class="form-group has-error">
+      <p class="help-block has-error">Subject and content, please!</p>
+    </div>
+    {% endif %}
   </div>
   <button type="submit" class="btn btn-primary">Submit</button>
 </form>
