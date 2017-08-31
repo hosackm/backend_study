@@ -40,8 +40,8 @@ def submit():
     # validate each entry
     errors = {}
     validation_functions = [
-        ("username", validate_username, [username,]),
-        ("password", validate_password, [password,]),
+        ("username", validate_username, [username, ]),
+        ("password", validate_password, [password, ]),
         ("verify", validate_verify, [password, verify]),
         ("email", validate_email, [email])]
     for key, func, args in validation_functions:
