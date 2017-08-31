@@ -11,21 +11,21 @@ def welcome():
     return render_template("welcome.html", posts=posts)
 
 
-@app.route("/submit", methods=["GET", "POST"])
+@app.route("/newpost", methods=["GET", "POST"])
 def submit():
     # render form if they're here from GET
     if request.method == "GET":
-        return render_template("submit.html")
+        return render_template("submit.html", errors={}, params={})
 
     # validate params and display error messages
-    title, content = request.form["title"], request.form["content"]
+    title, content = request.form["subject"], request.form["content"]
     errors = validate_form(title, content)
     if any(errors.values()):
         params = dict(title=title, content=content)
-        return render_template("submit.html", errors, params)
+        return render_template("submit.html", errors=errors, params=params)
 
     # add post to db and redirect to post page
-    id = db.add_post()
+    id = db.add_post(title, content)
     return redirect(url_for("posts", post_id=id))
 
 
@@ -50,6 +50,7 @@ def validate_form(title, content):
         errors["title"] = True
     if not content:
         errors["content"] = True
+    return errors
 
 
 if __name__ == "__main__":
