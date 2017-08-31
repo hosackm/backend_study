@@ -2,7 +2,9 @@
 
 This homework is to build a very minimal blog.  It has a frontpage that shows the most recent blog posts.  There should also be a submissions page where you can submit a title and blog post.  The website is to be backed by a SQL database that will store all the posts.
 
-## Database Design
+## My Design Choices
+
+### Database Design
 
 In order to meet all the required features of the blog assignment I've decided the database should store the following information:
 
@@ -11,7 +13,7 @@ In order to meet all the required features of the blog assignment I've decided t
     * Unique ID - An integer that can be used as a permalink to the post
     * Created Date - A Date value so that we can sort by most recent for displaying on the homepage
 
-## Application Design
+### Application Design
 
 The following routes should be exposed
 
@@ -20,7 +22,7 @@ The following routes should be exposed
     * /posts/<int:permalink> - for each blog entry we will have a dynamic route to fetch it from the database
 
 
-## Templates
+### Template Design
 
 There are three types of pages in this blog.
 
