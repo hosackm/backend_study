@@ -1,0 +1,62 @@
+<form action="/" method="POST">
+
+  <!-- Username Field -->
+  <div>
+    <label style="display: inline-block; width:140px; text-align: right">
+      Username:
+    </label>
+    {% if errors.username %}
+      <input type="text" name="username" value="{{errors.username}}">
+      <span style="color: red">That's not a valid username.</span>
+    {% else %}
+      <input type="text" name="username">
+    {% endif %}
+  </div>
+
+  <br>
+
+  <!-- Password Field -->
+  <div>
+    <label style="display: inline-block; width:140px; text-align: right">
+     Password:
+    </label>
+    <input type="password" name="password">
+    {% if errors.password %}
+    <span style="color: red">That wasn't a valid password.</span>
+    {% endif %}
+  </div>
+
+  <br>
+
+  <!-- Verify Password Field -->
+  <div>
+    <label style="display: inline-block; width:140px; text-align: right">
+     Verify Password:
+    </label>
+    <input type="password" name="verification_password">
+    {% if errors.verification_password %}
+    <span style="color: red">Your passwords didn't match.</span>
+    {% endif %}
+  </div>
+
+  <br>
+
+  <!-- Email Field -->
+  <div>
+    <label style="display: inline-block; width:140px; text-align: right">
+     Email (optional):
+    </label>
+    {% if errors.email %}
+      <input type="text" name="email" value="{{errors.email}}">
+      <span style="color: red">That's not a valid email.</span>
+    {% else %}
+      <input type="text" name="email">
+    {% endif %}
+  </div>
+
+  <br>
+
+  <div>
+    <input type="submit" value="Submit"/>
+  </div>
+</form>
