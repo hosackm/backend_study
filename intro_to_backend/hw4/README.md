@@ -10,10 +10,10 @@ The database has one table called users.  The columns are user_id, username, and
 
 The following routes are made available by the application:
 
-    * /signup
-    * /welcome
-    * /login
-    * /logout
+  * /signup
+  * /welcome
+  * /login
+  * /logout
 
 ### /signup
 This route displays a form with username, pass, verify pass, and optional email. This route validates the entries and if they look good it adds a user to the database and stores their hashed password.
@@ -27,7 +27,7 @@ This route displays a form with username and password. Once the form is posted i
 
 The cookie consists of one key/value pair:
 
-    `{"user_id": <user_id>|<hashed_password>}`
+    {"user_id": <user_id>|<hashed_password>}
 
 where `<user_id>` is the integer in the database associated with this user and `<hashed_password>` is the hashed password stored in the database
 
