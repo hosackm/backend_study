@@ -8,7 +8,7 @@
       <label for="inputUsername">Username</label>
       <input type="text" class="form-control"
              id="inputUsername" placeholder="Username" name="username"
-             value="{% if errors.username %}{{values.username}}{% endif %}">
+             value="{% if errors.username %}{{values.username | escape}}{% endif %}">
     </div>
     <!-- Password -->
     <div class="form-group">
@@ -24,7 +24,7 @@
     <div class="form-group">
       <label for="inputEmail">Email address</label>
       <input type="email" class="form-control" id="inputEmail" placeholder="Email" name="email"
-             value="{% if errors.email %}{{values.email}}{% endif %}">
+             value="{% if errors.email %}{{values.email | escape}}{% endif %}">
       {% if errors.username or errors.password or errors.verify or errors.email %}
       <div class="form-group has-error">
         <p class="help-block has-error">Error on {% if errors.username %}username{% elif errors.password %}password{% elif errors.verify %}verify{% else %}email{% endif %}</p>
