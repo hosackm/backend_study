@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="col-md-3">
+  <form action="/signup" method="POST">
+    <!-- Username -->
+    <div class="form-group">
+      <label for="inputUsername">Username</label>
+      <input type="text" class="form-control"
+             id="inputUsername" placeholder="Username" name="username"
+             value="{% if errors.username %}{{values.username}}{% endif %}">
+    </div>
+    <!-- Password -->
+    <div class="form-group">
+      <label for="inputPassword">Password</label>
+      <input type="password" class="form-control" id="inputPassword" placeholder="Password" name="password">
+    </div>
+    <!-- Verify -->
+    <div class="form-group">
+      <label for="inputVerifyPassword">Verify Password</label>
+      <input type="password" class="form-control" id="inputVerifyPassword" placeholder="Password" name="verify">
+    </div>
+    <!-- Email -->
+    <div class="form-group">
+      <label for="inputEmail">Email address</label>
+      <input type="email" class="form-control" id="inputEmail" placeholder="Email" name="email"
+             value="{% if errors.email %}{{values.email}}{% endif %}">
+      {% if errors.username or errors.password or errors.verify or errors.email %}
+      <div class="form-group has-error">
+        <p class="help-block has-error">Error on {% if errors.username %}username{% elif errors.password %}password{% elif errors.verify %}verify{% else %}email{% endif %}</p>
+      </div>
+      {% endif %}
+    </div>
+    <!-- Submit -->
+    <button type="submit" class="btn btn-success">Submit</button>
+  </form>
+</div>
+{% endblock %}
