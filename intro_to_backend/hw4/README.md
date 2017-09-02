@@ -36,4 +36,4 @@ where `<user_id>` is the integer in the database associated with this user and `
 
 The app doesn't check if a user exists before it creates a new one.  This means that two matching usernames can be added.  Whatever username comes back first in our database queries is the one we will compare passwords on.
 
-The SECRET used to hash the passwords is hardcoded in app.py.  This is terrible practice but this is just a homework assignment.  Plus the algorithm we're using is also in the same file so basically we aren't securing the passwords at all ¯\_(ツ)_/¯
+The SECRET used to hash the passwords is hardcoded in app.py.  This is terrible practice but this is just a homework assignment.  Plus the algorithm we're using is also in the same file so basically we aren't securing the passwords at all `¯\_(ツ)_/¯`
