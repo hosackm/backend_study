@@ -26,6 +26,13 @@ class Database:
             return username[0]
         return ""
 
+    def get_user_id_by_username(self, username):
+        cursor = self.connection.execute("select user_id from users where username = ?", (username,))
+        user_id = cursor.fetchone()
+        if user_id:
+            return user_id[0]
+        return None
+
 db = Database()
 
 if __name__ == "__main__":

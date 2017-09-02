@@ -15,7 +15,8 @@ def signup():
     if request.method == "GET":
         return render_template("signup.html", errors=None, values=None)
 
-    # validate entries that were POSTed in form
+    # validate entries that were POSTed in form. The assignment didn't ask for us to check if the username already
+    # exists. This would be a good idea so that no one can take your username
     errors = validate_form(request.form)
     if any(errors.values()):
         # get back the values that were entered to populate the form
@@ -52,6 +53,41 @@ def welcome():
         return redirect(url_for("signup"))
 
 
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "GET":
+        return render_template("login.html", error="", username="")
+
+    username = request.form.get("username")
+    password = request.form.get("password")
+
+    # lookup user_id by username
+    user_id = db.get_user_id_by_username(username)
+    if not user_id:
+        return render_template("login.html", error="User not found.", username=username)
+
+    # lookup hashed_password by user_id
+    hashed_password = db.get_hashed_pass_by_user_id(user_id)
+    # hash this password and check if match
+    if hash_pw(password) != hashed_password:
+        return render_template("login.html", error="Incorrect password.", username=username)
+
+    # everything looks good create response and add cookie to it
+    cookie = generate_cookie(user_id)
+    response = make_response(redirect(url_for("welcome")))
+    response.set_cookie("user_id", cookie)
+
+    return response
+
+
+@app.route("/logout")
+def logout():
+    # clear the cookie by setting user_id value to "" and redirect to login page
+    response = make_response(redirect(url_for("login")))
+    response.set_cookie("user_id", "")
+    return response
+
+
 def generate_cookie(user_id):
     """
     Look up hashed pass in database by user_id and create a string
@@ -64,16 +100,22 @@ def valid_cookie(cookie):
     """
     Lookup hashed password stored in database by user_id and see if it matches what's in the cookie
     """
-    user_id, hashpass = cookie.split("|")
-    dbhash = db.get_hashed_pass_by_user_id(user_id)
-    return hashpass == db.get_hashed_pass_by_user_id(user_id)
+    if cookie:
+        user_id, hashpass = cookie.split("|")
+        dbhash = db.get_hashed_pass_by_user_id(user_id)
+        return hashpass == db.get_hashed_pass_by_user_id(user_id)
+    return False
+
+
+def hash_pw(password):
+    return hmac.new(SECRET, bytes(password, encoding="utf8")).hexdigest()
 
 
 def add_user_to_db(username, password):
     """
     Store username and hash/salted password in db
     """
-    hashed_password = hmac.new(SECRET, bytes(password, encoding="utf8")).hexdigest()
+    hashed_password = hash_pw(password)
     user_id = db.add_user(username, hashed_password)
     return user_id
 
