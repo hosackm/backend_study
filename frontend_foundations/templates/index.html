@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+  
+  <a href="/new">Add new restaurant</a>
+
+  {% for r in restaurants %}
+  <h1>{{r.name}}</h1>
+  <a href="/edit/{{r.id}}">Edit</a>
+  <a href="/delete/{{r.id}}">Delete</a>
+  {% endfor %}
+
+{% endblock %}
