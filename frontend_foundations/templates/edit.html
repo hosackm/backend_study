@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 <h2>Rename {{restaurant.name}}</h2>
-<form action="/edit/{{restaurant.id}}" method="POST">
+<form action="/restaurant/{{restaurant.id}}/edit" method="POST">
   <label>Restaurant name:</label>
   <input type="text" name="restaurant_name">
   <input type="submit" value="Submit">

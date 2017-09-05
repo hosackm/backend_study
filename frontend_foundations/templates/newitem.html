@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Add a new menu item</h2>
+<form action="/restaurant/{{restaurant.id}}/menu/new" method="POST">
+  <label>Menu item name:</label>
+  <input type="text" name="menu_item_name">
+  <label>Menu item price:</label>
+  <input type="text" name="menu_item_price">
+  <label>Menu item course:</label>
+  <input type="text" name="menu_item_course">
+  <label>Description:</label>
+  <textarea name="menu_item_description"></textarea>
+  <input type="submit" value="Submit">
+</form>
+{% endblock %}

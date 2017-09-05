@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %}
+  <h1>{{ restaurant.name }}</h1>
+
+  <a href="/restaurant/{{restaurant.id}}/menu/new">Add a new item</a>
+
+  {% for m in menuitems %}
+    <h2>{{ m.name }} - {{ m.price }} | <a href="/restaurant/{{restaurant.id}}/menu/{{m.id}}/edit">Edit</a> | <a href="/restaurant/{{restaurant.id}}/menu/{{m.id}}/delete"">Delete</a></h2>
+    <p>{{ m.description }}</p>
+  {% endfor %}
+{% endblock %}
