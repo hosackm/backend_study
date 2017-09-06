@@ -22,6 +22,14 @@ class Restaurant(db.Model):
     def __repr__(self):
         return "<Restaurant {}>".format(self.name)
 
+    def serialize(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "address": self.address,
+            "image": self.image
+        }
+
 
 @app.route("/restaurants", methods=["POST"])
 def restaurants_post():
@@ -36,7 +44,8 @@ def restaurants_post():
     restaurant_info = lookup_meal(location, meal_type)
 
     # store in db
-    db.session.add(Restaurant())
+    db.session.add(Restaurant(**restaurant_info))
+    db.session.commit()
 
     # send JSON response
     return jsonify(restaurant_info)
@@ -45,15 +54,15 @@ def restaurants_post():
 @app.route("/restaurants", methods=["GET"])
 def restaurants_get():
     # lookup all restaurants
-
-    return jsonify({})
+    restaurants = Restaurant.query.all()
+    return jsonify({"restaurants": [r.serialize() for r in restaurants]})
 
 
 @app.route("/restaurant/<int:id>", methods=["GET"])
 def restaurant_lookup(id):
     # lookup restaurant by id
-
-    return jsonify({})
+    restaurant = Restaurant.query.filter_by(id=id).first()
+    return jsonify(restaurant.serialize())
 
 if __name__ == "__main__":
     app.run(debug=True)
