@@ -1,35 +1,39 @@
-from collections import namedtuple
-import requests
+from flask import Flask, request, jsonify
+from apis import lookup_meal
 
-Coordinate = namedtuple("Coordinate", ["lat", "lng"])
-
-FOURSQUARE_CLIENT_ID = "432UR1ROVWNLP0G3LU2SF3QOKZQ53XL0411G5IP3CZUQFRDO"
-FOURSQUARE_CLIENT_SECRET = "1ROWRVOGF11U5FIZZLNXPYT2WP0CF3RH1M3GGIUPL2XID4XW"
-GOOGLE_API_KEY = "AIzaSyCEDxxkuuwvwL8zelSLNOLqFpfTQN_LTa8"
-
-FOURSQUARE_BASE_URL = "https://api.foursquare.com/v2/venues/search"
-GOOGLE_BASE_URL = "https://maps.googleapis.com/maps/api/geocode/json"
+app = Flask(__name__)
 
 
-def get_coordinate(city_name):
-    search_url = GOOGLE_BASE_URL + "?key={}".format(GOOGLE_API_KEY)
-    search_url += "&address={}".format(city_name)
-    print("HTTP GET:", search_url)
-    response = requests.get(search_url)
-    latlong = response.json()["results"][0]["geometry"]["location"]
-    return Coordinate(**latlong)
+@app.route("/restaurants", methods=["POST"])
+def restaurants_post():
+    location = request.args.get("location")
+    meal_type = request.args.get("mealType")
+
+    # check that location and meal type were provided
+    if any([not p for p in (location, meal_type)]):
+        return jsonify({"error": "Must provide location and meal_type in url."})
+
+    # lookup meal
+    restaurant_info = lookup_meal(location, meal_type)
+
+    # store in db
+
+    # send JSON response
+    return jsonify(restaurant_info)
 
 
-def search_foursquare(query_string, coordinate):
-    search_url = FOURSQUARE_BASE_URL + "?" + query_string
-    search_url += "&" + "ll={},{}".format(*coordinate)
-    search_url += "&" + "client_id={}".format(FOURSQUARE_CLIENT_ID)
-    search_url += "&" + "client_secret={}".format(FOURSQUARE_CLIENT_SECRET)
-    search_url += "&v=20170905" + "&limit=5"
-    return requests.get(search_url).json()["response"]["venues"][0]
+@app.route("/restaurants", methods=["GET"])
+def restaurants_get():
+    # lookup all restaurants
 
+    return jsonify({})
+
+
+@app.route("/restaurant/<int:id>", methods=["GET"])
+def restaurant_lookup(id):
+    # lookup restaurant by id
+
+    return jsonify({})
 
 if __name__ == "__main__":
-    from pprint import pprint
-    coord = get_coordinate("2905 Harrison Street San Francisco CA 94110")
-    pprint(search_foursquare("pizza", coord))
+    app.run(debug=True)
