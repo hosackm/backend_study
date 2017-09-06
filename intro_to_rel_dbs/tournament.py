@@ -1,37 +1,57 @@
 import psycopg2
+from collections import namedtuple
+
+# used namedtuple for nice attribute access
+Record = namedtuple("Record", ("id", "name", "wins", "total"))
+
+
+class DBConnection:
+    """
+    DB Context Manager for getting rid of duplicated connect, execute, commit, and close calls.
+    """
+    def __enter__(self):
+        self.db = connect()
+        self.cursor = self.db.cursor()
+        return self.cursor
+
+    def __exit__(self, *args):
+        self.db.commit()
+        self.db.close()
+
+    # expose methods from Python's DB-API
+    def execute(self):
+        self.cursor.execute()
+
+    def fetchone(self):
+        return self.cursor.fetchone()
+
+    def fetchall(self):
+        return self.cursor.fetchall()
 
 
 def connect():
     """Connect to the PostgreSQL database.  Returns a database connection."""
-    return psycopg2.connect("dbname=tournament", user="postgres", password="postgres")
+    return psycopg2.connect("dbname=tournament")
 
 
 def deleteMatches():
     """Remove all the match records from the database."""
-    db = connect()
-    cursor = db.cursor()
-    cursor.execute("DELETE FROM matches")
-    cursor.commit()
-    db.close()
+    with DBConnection() as db:
+        db.execute("DELETE FROM matches;")
 
 
 def deletePlayers():
     """Remove all the player records from the database."""
-    db = connect()
-    cursor = db.cursor()
-    cursor.execute("DELETE FROM players")
-    cursor.commit()
-    db.close()
+    with DBConnection() as db:
+        db.execute("DELETE FROM players;")
 
 
 def countPlayers():
     """Returns the number of players currently registered."""
-    db = connect()
-    cursor = db.cursor()
-    cursor.execute("SELECT COUNT(*) FROM players")
-    n = cursor.fetchone()
-    db.close()
-    return n
+    with DBConnection() as db:
+        db.execute("SELECT COUNT(*) FROM players;")
+        n = db.fetchone()
+    return n[0]
 
 
 def registerPlayer(name):
@@ -43,11 +63,8 @@ def registerPlayer(name):
     Args:
       name: the player's full name (need not be unique).
     """
-    db = connect()
-    cursor = db.cursor()
-    cursor.execute("INSERT INTO players (name) VALUES (%s)", name)
-    cursor.commit()
-    db.close()
+    with DBConnection() as db:
+        db.execute("INSERT INTO players (name) VALUES (%s);", (name,))
 
 
 def playerStandings():
@@ -61,6 +78,12 @@ def playerStandings():
         wins: the number of matches the player has won
         matches: the number of matches the player has played
     """
+    with DBConnection() as db:
+        db.execute("SELECT * FROM standings;")
+        standings = db.fetchall()
+
+    # assemble a named tuple for every database entry
+    return [Record(*s) for s in standings]
 
 
 def reportMatch(winner, loser):
@@ -69,6 +92,8 @@ def reportMatch(winner, loser):
       winner:  the id number of the player who won
       loser:  the id number of the player who lost
     """
+    with DBConnection() as db:
+        db.execute("INSERT INTO matches (winner, loser) VALUES (%s, %s)", (winner, loser))
 
 
 def swissPairings():
@@ -86,3 +111,6 @@ def swissPairings():
         id2: the second player's unique id
         name2: the second player's name
     """
+    standings = playerStandings()
+    return [(standings[2*i].id, standings[2*i].name, standings[2*i+1].id, standings[2*i+1].name)
+            for i in range(len(standings)//2)]
