@@ -26,7 +26,7 @@ def search_foursquare(query_string, coordinate):
     search_url += "&" + "client_id={}".format(FOURSQUARE_CLIENT_ID)
     search_url += "&" + "client_secret={}".format(FOURSQUARE_CLIENT_SECRET)
     search_url += "&v=20170905" + "&limit=5"
-    return requests.get(search_url).json()
+    return requests.get(search_url).json()["response"]["venues"][0]
 
 
 if __name__ == "__main__":
