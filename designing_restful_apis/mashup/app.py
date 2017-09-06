@@ -62,7 +62,43 @@ def restaurants_get():
 def restaurant_lookup(id):
     # lookup restaurant by id
     restaurant = Restaurant.query.filter_by(id=id).first()
-    return jsonify(restaurant.serialize())
+    if restaurant:
+        return jsonify(restaurant.serialize())
+    return jsonify({"error": "The restaurant could not be found."})
+
+
+@app.route("/restaurant/<int:id>", methods=["UPDATE"])
+def restaurant_update(id):
+    # validate the args
+    name = request.args.get("name")
+    address = request.args.get("address")
+    image = request.args.get("image")
+
+    if any([not p for p in (name, address, image)]):
+        return jsonify({"error": "Must supply name, address, and image as query parameters"})
+
+    params = {"name": name, "address": address, "image": image}
+
+    # lookup restaurant by id
+    db.session.query(Restaurant).update(params)
+    db.session.commit()
+
+    return jsonify(params)
+
+
+@app.route("/restaurant/<int:id>", methods=["DELETE"])
+def restaurant_delete(id):
+    # lookup restaurant by id
+    restaurant = Restaurant.query.filter_by(id=id).first()
+
+    if not restaurant:
+        return jsonify({"error": "No entry for that restaurant ID"})
+
+    db.session.delete(restaurant)
+    db.session.commit()
+
+    return jsonify({"response": "Deleted restaurant"})
+
 
 if __name__ == "__main__":
     app.run(debug=True)
