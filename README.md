@@ -7,7 +7,7 @@ This repository will store the projects and coursework that I do on MOOC website
 Much of the content of these courses is review for me so I was able to breeze through courses quickly:
 
   1. [Intro to Backend](https://www.udacity.com/course/intro-to-backend--ud171)
-  2. [Intro to Relation Databases](https://www.udacity.com/course/intro-to-relational-databases--ud197)
+  2. [Intro to Relational Databases](https://www.udacity.com/course/intro-to-relational-databases--ud197)
   3. [Fullstack Foundations](https://www.udacity.com/course/full-stack-foundations--ud088)
 
 ## Future Courses
