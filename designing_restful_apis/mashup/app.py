@@ -1,7 +1,26 @@
 from flask import Flask, request, jsonify
+from flask_sqlalchemy import SQLAlchemy
 from apis import lookup_meal
 
 app = Flask(__name__)
+app.config["SQLALCHEMY_DATABASE_URI"] = "postgres://localhost:5432/postgres"
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+db = SQLAlchemy(app)
+
+
+class Restaurant(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    address = db.Column(db.String(250), nullable=False)
+    name = db.Column(db.String(80), nullable=False)
+    image = db.Column(db.String(250))
+
+    def __init__(self, name, address, image):
+        self.name = name
+        self.address = address
+        self.image = image
+
+    def __repr__(self):
+        return "<Restaurant {}>".format(self.name)
 
 
 @app.route("/restaurants", methods=["POST"])
@@ -17,6 +36,7 @@ def restaurants_post():
     restaurant_info = lookup_meal(location, meal_type)
 
     # store in db
+    db.session.add(Restaurant())
 
     # send JSON response
     return jsonify(restaurant_info)
