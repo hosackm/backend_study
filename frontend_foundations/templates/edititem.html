@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="col-md-6 col-md-offset-3">
-<h2>Add a new menu item</h2>
+<h2><i>Editing</i> {{menu_item.name}}</h2>
 <form action="/restaurant/{{restaurant.id}}/menu/{{menu_item.id}}/edit" method="POST">
   <div class="form-group">
     <label for="menuItemName">Menu item name:</label>
@@ -9,7 +9,10 @@
   </div>
   <div class="form-group">
     <label for="menuItemPrice">Menu item price:</label>
-    <input class="form-control" id="menuItemPrice" type="text" name="menu_item_price">
+    <div class="input-group">
+      <span class="input-group-addon">$</span>
+      <input class="form-control" id="menuItemPrice" type="text" name="menu_item_price">
+    </div>
   </div>
   <div class="form-group">
     <label for="menuItemCourse">Menu item course:</label>
