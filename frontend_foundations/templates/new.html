@@ -1,9 +1,13 @@
 {% extends 'base.html' %}
 {% block content %}
+<div class="col-md-6 col-md-offset-3">
 <h2>Add a new restaurant</h2>
-<form action="/restaurant/new" method="POST">
-  <label>Restaurant name:</label>
-  <input type="text" name="restaurant_name">
-  <input type="submit" value="Submit">
-</form>
+  <form action="/restaurant/new" method="POST">
+    <div class="form-group">
+      <label for="restaurantName">Restaurant name:</label>
+      <input class="form-control" id="restaurantName" type="text" name="restaurant_name">
+    </div>
+    <input class="btn btn-success" type="submit" value="Submit">
+  </form>
+</div>
 {% endblock %}
