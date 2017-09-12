@@ -18,6 +18,7 @@ def verify_password(username, password):
     user = session.query(User).filter_by(username=username).first()
     if not user or not user.verify_password(password):
         return False
+    g.user = user
     return True
 
 
