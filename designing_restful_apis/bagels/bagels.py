@@ -28,6 +28,11 @@ def users():
     if not username or not password:
         return jsonify({"error": "Must provide a username and password"})
 
+    # check if user already exists
+    existent_user = session.query(User).filter_by(username=username).first()
+    if existent_user:
+        return jsonify({"error": "That username already exists."})
+
     # Create User
     user = User(username=username)
     user.hash_password(password)
