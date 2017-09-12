@@ -18,6 +18,9 @@ class User(Base):
     def verify_password(self, password):
         return pwd_context.verify(password, self.password_hash)
 
+    def serialize(self):
+        return {"username": self.username}
+
 
 engine = create_engine('sqlite:///bagelusers.db')
 Base.metadata.create_all(engine)
