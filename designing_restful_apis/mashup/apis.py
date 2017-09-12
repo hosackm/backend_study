@@ -1,12 +1,13 @@
 from collections import namedtuple
 from urllib.parse import urlencode
 import requests
+import os
 
 Coordinate = namedtuple("Coordinate", ["lat", "lng"])
 
-FOURSQUARE_CLIENT_ID = "432UR1ROVWNLP0G3LU2SF3QOKZQ53XL0411G5IP3CZUQFRDO"
-FOURSQUARE_CLIENT_SECRET = "1ROWRVOGF11U5FIZZLNXPYT2WP0CF3RH1M3GGIUPL2XID4XW"
-GOOGLE_API_KEY = "AIzaSyBF647CLJc5t2gX2iR7QPvebfuavGDJnfo"
+FOURSQUARE_CLIENT_ID = os.environ.get("FOURSQUARE_CLIENT_ID")
+FOURSQUARE_CLIENT_SECRET = os.environ.get("FOURSQUARE_CLIENT_SECRET")
+GOOGLE_API_KEY = os.environ.get("GOOGLE_API_KEY")
 FOURSQUARE_BASE_URL = "https://api.foursquare.com/v2/venues/search"
 GOOGLE_BASE_URL = "https://maps.googleapis.com/maps/api/geocode/json"
 
