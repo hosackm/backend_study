@@ -1,6 +1,5 @@
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy import create_engine
 from passlib.apps import custom_app_context as pwd_context
 
@@ -20,5 +19,5 @@ class User(Base):
         return pwd_context.verify(password, self.password_hash)
 
 
-engine = create_engine('sqlite:///users.db')
+engine = create_engine('sqlite:///bagelusers.db')
 Base.metadata.create_all(engine)
