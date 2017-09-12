@@ -15,7 +15,10 @@ session = DBSession()
 
 @auth.verify_password
 def verify_password(username, password):
-    ...
+    user = session.query(User).filter_by(username=username).first()
+    if not user or not user.verify_password(password):
+        return False
+    return True
 
 
 @app.route("/users", methods=["POST"])
@@ -46,13 +49,17 @@ def users():
 
 @app.route("/users/<int:id>", methods=["GET"])
 def get_user(id):
-    ...
+    user = session.query(User).filter_by(id=id).first()
+    if not user:
+        return jsonify({"error": "That user doesn't exist"})
+
+    return jsonify(user.serialize())
 
 
 @app.route("/bagels", methods=["GET"])
 @auth.login_required
 def bagels():
-    ...
+    return jsonify({"bagels": ["onion", "asiago", "jalapeno", "everything"]})
 
 
 if __name__ == "__main__":
