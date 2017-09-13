@@ -100,3 +100,16 @@ ENV/
 
 # SQLite databases
 *.db
+
+# Xcode stuff
+*.dSYM
+*.plist
+*.xcuserdatad
+*.xcuserdata
+*.xcworkspacedata
+*.xcworkspace
+*.pbxproj
+*.xcodeproj
+*.xcuserstate
+*.xcscheme
+*.out
