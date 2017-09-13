@@ -14,12 +14,28 @@ session = DBSession()
 
 
 @auth.verify_password
-def verify_password(username, password):
-    user = session.query(User).filter_by(username=username).first()
-    if not user or not user.verify_password(password):
-        return False
+def verify_password(username_or_token, password):
+    userid = User.verify_auth_token(username_or_token)
+
+    # token
+    if userid:
+        user = session.query(User).filter_by(id=userid)
+    # no token, check password
+    else:
+        user = session.query(User).filter_by(username=username_or_token).first()
+        if not user or not user.verify_password(password):
+            return False
+
+    # all good. set global user
     g.user = user
     return True
+
+
+@app.route("/token", methods=["GET"])
+@auth.login_required
+def get_auth_token():
+    token = g.user.generate_auth_token()
+    return jsonify({"token": token.decode("ascii"), "expires_in": 600})
 
 
 @app.route("/users", methods=["POST"])
