@@ -49,7 +49,7 @@ int main()
 }
 
 /* Create a new tree and return a pointer.  This tree must be deallocated with a call to destroy_tree */
-=tree new_tree()
+tree new_tree()
 {
     tree t;
     t = malloc(sizeof(tree_s));
@@ -71,7 +71,9 @@ void destroy_tree(tree t)
 int tree_insert(tree t, int value)
 {
     if(!t)
+    {
         return -1;
+    }
 
     if(t->root == NULL)
     {
@@ -81,7 +83,6 @@ int tree_insert(tree t, int value)
         t->root->value = value;
         return 0;
     }
-    _insert_value(t->root, value);
     else
     {
         _insert_value(t->root, value);
@@ -93,7 +94,9 @@ int tree_insert(tree t, int value)
 int tree_remove(tree t, int value)
 {
     if(!t)
+    {
         return -1;
+    }
 
     if(t->root)
     {
@@ -120,7 +123,8 @@ void _insert_value(node n, int value)
         {
             n->left = malloc(sizeof(node_s));
             n->left->value = value;
-            n->left->left = n->left->right = NULL;
+            n->left->left = NULL;
+            n->left->right = NULL;
         }
         else
         {
@@ -133,7 +137,8 @@ void _insert_value(node n, int value)
         {
             n->right = malloc(sizeof(node_s));
             n->right->value = value;
-            n->right->left = n->right->left = NULL;
+            n->right->left = NULL;
+            n->right->right = NULL;
         }
         else
         {
@@ -195,6 +200,11 @@ void _remove_value(node n, int value)
                 {
                     tmp = n->left->right;
                 }
+                else
+                {
+                    n->left = NULL;
+                    return;
+                }
 
                 _destroy_node(n->left);
                 n->left = tmp;
@@ -229,6 +239,11 @@ void _remove_value(node n, int value)
                 else if(n->right->right)
                 {
                     tmp = n->right->right;
+                }
+                else
+                {
+                    n->right = NULL;
+                    return;
                 }
 
                 _destroy_node(n->right);
