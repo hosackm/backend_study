@@ -9,6 +9,7 @@ typedef struct _node_s* node;
 struct _node_s
 {
     int value;
+    node parent;
     node left;
     node right;
 } node_s;
@@ -25,12 +26,6 @@ int tree_insert(tree t, int value);
 int tree_remove(tree t, int value);
 void print_tree(tree t);
 
-// Tree private API
-void _insert_value(node n, int value);
-void _remove_value(node n, int value);
-void _destroy_node(node n);
-void _print_node(node n);
-
 int main()
 {
     int ret;
@@ -40,13 +35,25 @@ int main()
     tree_insert(t, 6);
     tree_insert(t, 1);
     tree_insert(t, 2);
+    tree_insert(t, 3);
+    tree_insert(t, 8);
+    tree_insert(t, 9);
+    tree_insert(t, 5);
+    tree_insert(t, 4);
     tree_insert(t, 7);
+    print_tree(t);
     ret = tree_remove(t, 2);
     print_tree(t);
     destroy_tree(t);
 
     return 0;
 }
+
+// Tree private API
+void _insert_value(node n, int value);
+void _remove_value(node n, int value);
+void _destroy_node(node n);
+void _print_node(node n);
 
 /* Create a new tree and return a pointer.  This tree must be deallocated with a call to destroy_tree */
 tree new_tree()
@@ -80,6 +87,7 @@ int tree_insert(tree t, int value)
         t->root = malloc(sizeof(node_s));
         t->root->left = NULL;
         t->root->right = NULL;
+        t->root->parent = NULL;
         t->root->value = value;
         return 0;
     }
