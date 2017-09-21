@@ -18,56 +18,74 @@ class BinarySearchTree:
         self.root = None
 
     def add_node(self, value):
+        """
+        Inserts a new node into the tree with value equal to value
+        """
         newnode = Node(value)
         if not self.root:
             self.root = newnode
         else:
-            self.recursive_add_node(self.root, newnode)
+            self._recursive_add_node(self.root, newnode)
 
     def delete_node(self, value):
+        """
+        Removes the first node that that has the value equal to value
+        """
         if self.root:
-            self.root = self.recursive_delete_node(self.root, value)
+            self.root = self._recursive_delete_node(self.root, value)
 
-    def recursive_add_node(self, node, newnode):
+    def _recursive_add_node(self, node, newnode):
+        """
+        Helper function to recursively search through tree until it finds a location to add the new node
+        """
         if newnode.value < node.value:
             if not node.left:
                 node.left = newnode
                 newnode.parent = node
             else:
-                self.recursive_add_node(node.left, newnode)
+                self._recursive_add_node(node.left, newnode)
         else:
             if not node.right:
                 node.right = newnode
                 newnode.parent = node
             else:
-                self.recursive_add_node(node.right, newnode)
+                self._recursive_add_node(node.right, newnode)
 
-    def recursive_delete_node(self, node, value):
+    def _recursive_delete_node(self, node, value):
+        """
+        Helper function to recursively search through a tree and find the node to delete
+        """
         if node is None:
             return None
 
         if value < node.value:
-            node.left = self.recursive_delete_node(node.left, value)
+            node.left = self._recursive_delete_node(node.left, value)
         elif value > node.value:
-            node.right = self.recursive_delete_node(node.right, value)
+            node.right = self._recursive_delete_node(node.right, value)
         else:
             if node.left is None:
                 return node.right
             if node.right is None:
                 return node.left
 
-            min_node_in_right_subtree = self.get_min_node_in_subtree(node.right)
+            min_node_in_right_subtree = self._get_min_node(node.right)
             node.value = min_node_in_right_subtree.value
-            node.right = self.recursive_delete_node(node.right, min_node_in_right_subtree.value)
+            node.right = self._recursive_delete_node(node.right, min_node_in_right_subtree.value)
 
         return node
 
-    def get_min_node_in_subtree(self, node):
+    def _get_min_node(self, node):
+        """
+        Helper function to find the minimum value in a tree
+        """
         if node.left is None:
             return node
-        return self.get_min_node_in_subtree(node.left)
+        return self._get_min_node(node.left)
 
     def traverse(self, order=PREORDER):
+        """
+        Traverses a tree and prints a node on a single line.  You can choose which order to traverse the tree
+        """
         print("Tree:")
         if order == self.PREORDER:
             self._trav_preorder(self.root)
@@ -77,27 +95,30 @@ class BinarySearchTree:
             self._trav_postorder(self.root)
 
     def _trav_preorder(self, node):
-        if node.left:
-            self._trav_preorder(node.left)
-        if node.right:
-            self._trav_preorder(node.right)
+        """
+        Helper function to traverse a tree recursively in preorder
+        """
         if node:
+            self._trav_preorder(node.left)
+            self._trav_preorder(node.right)
             print(node)
 
     def _trav_inorder(self, node):
-        if node.left:
-            self._trav_inorder(node.left)
+        """
+        Helper function to traverse a tree recursively in inorder
+        """
         if node:
+            self._trav_inorder(node.left)
             print(node)
-        if node.right:
             self._trav_inorder(node.right)
 
     def _trav_postorder(self, node):
+        """
+        Helper function to traverse a tree recursively in postorder
+        """
         if node:
             print(node)
-        if node.left:
             self._trav_postorder(node.left)
-        if node.right:
             self._trav_postorder(node.right)
 
 
