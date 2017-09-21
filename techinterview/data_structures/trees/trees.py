@@ -1,9 +1,9 @@
 from collections import namedtuple
 
 
-class Leaf:
+class Node:
     """
-    Leaf is the structure that represents one node within a tree
+    Node is the structure that represents one node within a tree
     """
     def __init__(self, value, parent):
         self.value = value
@@ -14,7 +14,7 @@ class Leaf:
 
 class BinaryTree:
     """
-    Binary tree is a structure that contains a root Leaf.  Each leaf may have up to two children leaves
+    Binary tree is a structure that contains a root Node.  Each leaf may have up to two children leaves
     labeled left and right
     """
     INORDER = 0
@@ -29,7 +29,7 @@ class BinaryTree:
         Add a value to the tree
         """
         if not self.root:  # first leaf
-            self.root = Leaf(value, None)
+            self.root = Node(value, None)
         else:
             self._push(value, self.root)
 
@@ -57,12 +57,12 @@ class BinaryTree:
         """
         if value < leaf.value:
             if not leaf.left:
-                leaf.left = Leaf(value, leaf)
+                leaf.left = Node(value, leaf)
             else:
                 self._push(value, leaf.left)
         else:
             if not leaf.right:
-                leaf.right = Leaf(value, leaf)
+                leaf.right = Node(value, leaf)
             else:
                 self._push(value, leaf.right)
 
