@@ -48,7 +48,7 @@ func NewTree() *Tree{
     return &Tree{nil}
 }
 
-// insert a node with value == value into a tree 
+// insert a node with value == value into a tree
 func (t *Tree) Insert(value int) {
     if t.Root == nil{
         t.Root = newNode(value)
@@ -61,21 +61,4 @@ func (t *Tree) Insert(value int) {
 func (t *Tree) Traverse() {
     fmt.Println("Tree:")
     t.Root.traverse()
-}
-
-func main() {
-    t := NewTree()
-    if t == nil {
-        panic("Couldn't create new tree")
-    }
-
-    t.Insert(50)
-    t.Insert(30)
-    t.Insert(20)
-    t.Insert(40)
-    t.Insert(70)
-    t.Insert(60)
-    t.Insert(80)
-
-    t.Traverse()
 }
