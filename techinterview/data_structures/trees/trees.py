@@ -1,105 +1,123 @@
-from collections import namedtuple
-
-
 class Node:
-    """
-    Node is the structure that represents one node within a tree
-    """
-    def __init__(self, value, parent):
-        self.value = value
+    def __init__(self, value, parent=None):
         self.parent = parent
+        self.value = value
         self.left = None
         self.right = None
 
+    def __repr__(self):
+        return "Node({})".format(self.value)
 
-class BinaryTree:
-    """
-    Binary tree is a structure that contains a root Node.  Each leaf may have up to two children leaves
-    labeled left and right
-    """
-    INORDER = 0
-    PREORDER = 1
+
+class BinarySearchTree:
+    PREORDER = 0
+    INORDER = 1
     POSTORDER = 2
 
     def __init__(self):
         self.root = None
 
-    def push(self, value):
-        """
-        Add a value to the tree
-        """
-        if not self.root:  # first leaf
-            self.root = Node(value, None)
+    def add_node(self, value):
+        newnode = Node(value)
+        if not self.root:
+            self.root = newnode
         else:
-            self._push(value, self.root)
+            self.recursive_add_node(self.root, newnode)
 
-    def traverse(self, order=INORDER):
-        """
-        Traverse the tree in either inorder, preorderm or, postoder
-        """
-        order_funcs = {
-            self.INORDER: self._inorder,
-            self.PREORDER: self._preorder,
-            self.POSTORDER: self._postorder
-        }
-
-        if order not in order_funcs:
-            raise Exception("Traversal order value not valid")
-
+    def delete_node(self, value):
         if self.root:
-            selected = order_funcs[order]
-            selected(self.root)
+            self.root = self.recursive_delete_node(self.root, value)
 
-    # Private Helper Functions
-    def _push(self, value, leaf):
-        """
-        Recursive helper function to find correct spot in tree
-        """
-        if value < leaf.value:
-            if not leaf.left:
-                leaf.left = Node(value, leaf)
+    def recursive_add_node(self, node, newnode):
+        if newnode.value < node.value:
+            if not node.left:
+                node.left = newnode
+                newnode.parent = node
             else:
-                self._push(value, leaf.left)
+                self.recursive_add_node(node.left, newnode)
         else:
-            if not leaf.right:
-                leaf.right = Node(value, leaf)
+            if not node.right:
+                node.right = newnode
+                newnode.parent = node
             else:
-                self._push(value, leaf.right)
+                self.recursive_add_node(node.right, newnode)
 
-    @staticmethod
-    def _inorder(leaf):
-        if leaf.left:
-            BinaryTree._inorder(leaf.left)
-        print(leaf.value)
-        if leaf.right:
-            BinaryTree._inorder(leaf.right)
+    def recursive_delete_node(self, node, value):
+        if node is None:
+            return None
 
-    @staticmethod
-    def _preorder(leaf):
-        print(leaf.value)
-        if leaf.left:
-            BinaryTree._preorder(leaf.left)
-        if leaf.right:
-            BinaryTree._preorder(leaf.right)
+        if value < node.value:
+            node.left = self.recursive_delete_node(node.left, value)
+        elif value > node.value:
+            node.right = self.recursive_delete_node(node.right, value)
+        else:
+            if node.left is None:
+                return node.right
+            if node.right is None:
+                return node.left
 
-    @staticmethod
-    def _postorder(leaf):
-        if leaf.left:
-            BinaryTree._postorder(leaf.left)
-        if leaf.right:
-            BinaryTree._postorder(leaf.right)
-        print(leaf.value)
+            min_node_in_right_subtree = self.get_min_node_in_subtree(node.right)
+            node.value = min_node_in_right_subtree.value
+            node.right = self.recursive_delete_node(node.right, min_node_in_right_subtree.value)
+
+        return node
+
+    def get_min_node_in_subtree(self, node):
+        if node.left is None:
+            return node
+        return self.get_min_node_in_subtree(node.left)
+
+    def traverse(self, order=PREORDER):
+        print("Tree:")
+        if order == self.PREORDER:
+            self._trav_preorder(self.root)
+        elif order == self.INORDER:
+            self._trav_inorder(self.root)
+        elif order == self.POSTORDER:
+            self._trav_postorder(self.root)
+
+    def _trav_preorder(self, node):
+        if node.left:
+            self._trav_preorder(node.left)
+        if node.right:
+            self._trav_preorder(node.right)
+        if node:
+            print(node)
+
+    def _trav_inorder(self, node):
+        if node.left:
+            self._trav_inorder(node.left)
+        if node:
+            print(node)
+        if node.right:
+            self._trav_inorder(node.right)
+
+    def _trav_postorder(self, node):
+        if node:
+            print(node)
+        if node.left:
+            self._trav_postorder(node.left)
+        if node.right:
+            self._trav_postorder(node.right)
 
 
 if __name__ == "__main__":
-    tree = BinaryTree()
-    tree.push(6)
-    tree.push(1)
-    tree.push(7)
-    tree.push(2)
-    print("inorder:")
-    tree.traverse(tree.INORDER)  # 2, 1, 6, 7
-    print("preorder:")
-    tree.traverse(tree.PREORDER)  # 6, 1, 2, 7
-    print("postorder:")
-    tree.traverse(tree.POSTORDER)  # 2, 1, 7, 6
+    t = BinarySearchTree()
+    t.add_node(50)
+    t.add_node(30)
+    t.add_node(20)
+    t.add_node(40)
+    t.add_node(70)
+    t.add_node(60)
+    t.add_node(80)
+
+    t.traverse(BinarySearchTree.INORDER)  # 20->30->40->50->60->70->80
+
+    t.delete_node(20)
+    t.traverse(BinarySearchTree.INORDER)  # 30->40->50->60->70->80
+
+    t.delete_node(30)
+    t.traverse(BinarySearchTree.INORDER)  # 40->50->60->70->80
+
+    t.delete_node(50)
+    t.traverse(BinarySearchTree.INORDER)  # 40->60->70->80
