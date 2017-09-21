@@ -66,5 +66,34 @@ func TestAddLotsOfNodesAndTheyEndUpInCorrectSpots(t *testing.T) {
     if tree.Root.Right.Right.Value != 80 {
         t.Errorf("Expected", 80, "got", tree.Root.Right.Right.Value)
     }
+}
 
+func TestSearchReturnsCorrectValues(t *testing.T) {
+    tree := NewTree()
+
+    if tree.Search(50) {
+        t.Errorf("Empty tree didn't return false in Search()")
+    }
+
+    tree.Insert(50)
+
+    if tree.Search(50) == false {
+        t.Errorf("50 was inserted in the tree but couldn't be found using Search()")
+    }
+
+    if tree.Search(49) {
+        t.Errorf("49 was found in the tree but it wasn't inserted")
+    }
+
+    tree.Insert(30)
+    tree.Insert(20)
+    tree.Insert(40)
+
+    if tree.Search(20) == false {
+        t.Errorf("20 couldn't be found in a tree that had 20 inserted")
+    }
+
+    if tree.Search(19) {
+        t.Errorf("A Node was found that didn't exist in a Tree")
+    }
 }
