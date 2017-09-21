@@ -1,140 +1,234 @@
-#include <stdio.h>
 #include <stdlib.h>
+#include <stdio.h>
 
-
-// Tree type
-typedef struct _tree_s* tree;
-typedef struct _node_s* node;
-
-struct _node_s
+// BST node data type
+struct node
 {
     int value;
-    node left;
-    node right;
-} node_s;
+    struct node* left;
+    struct node* right;
+};
 
-struct _tree_s
+// node functions
+struct node* node_new(int value)
 {
-    node root;
-} tree_s;
-
-// Tree public API
-tree new_tree();
-void destroy_tree(tree t);
-int tree_insert(tree t, int value);
-void print_tree(tree t);
-
-// Tree private API
-void _insert_value(node n, int value);
-void _destroy_node(node n);
-void _print_node(node n);
-
-int main()
-{
-    tree t;
-
-    t = new_tree();
-    tree_insert(t, 6);
-    tree_insert(t, 1);
-    tree_insert(t, 2);
-    tree_insert(t, 7);
-    print_tree(t);
-    destroy_tree(t);
-
-    return 0;
+    struct node* n = malloc(sizeof(struct node));
+    n->value = value;
+    n->left = NULL;
+    n->right = NULL;
+    return n;
 }
 
-tree new_tree()
+void node_destroy(struct node* n)
 {
-    tree t;
-    t = malloc(sizeof(tree_s));
-    t->root = NULL;
-    return t;
-}
-
-void destroy_tree(tree t)
-{
-    if(t->root)
+    if(n)
     {
-        _destroy_node(t->root);
+        node_destroy(n->left);
+        node_destroy(n->right);
+        free(n);
     }
-    free(t);
 }
 
-int tree_insert(tree t, int value)
+struct node* node_min_node_in_subtree(struct node* n)
 {
-    node n;
-    if(t->root == NULL)
+    struct node* tmp = n;
+
+    if(tmp)
     {
-        t->root = malloc(sizeof(node_s));
-        t->root->left = NULL;
-        t->root->right = NULL;
-        t->root->value = value;
-        return 0;
+        while(tmp->left != NULL)
+        {
+            tmp = tmp->left;
+        }
     }
 
-    _insert_value(t->root, value);
-    return 0;
+    return tmp;
 }
 
-void _insert_value(node n, int value)
+void node_insert(struct node* n, int value)
 {
     if(value < n->value)
     {
         if(n->left == NULL)
         {
-            n->left = malloc(sizeof(node_s));
-            n->left->value = value;
+            n->left = node_new(value);
+            return;
         }
         else
         {
-            _insert_value(n->left, value);
+            node_insert(n->left, value);
         }
     }
     else
     {
         if(n->right == NULL)
         {
-            n->right = malloc(sizeof(node_s));
-            n->right->value = value;
+            n->right = node_new(value);
+            return;
         }
         else
         {
-            _insert_value(n->right, value);
+            node_insert(n->right, value);
         }
     }
 }
 
-void _destroy_node(node n)
+struct node* node_delete(struct node* n, int value)
+{
+    if(n == NULL)
+    {
+        return NULL;
+    }
+
+    // search in left subtree
+    if(value < n->value)
+    {
+        n->left = node_delete(n->left, value);
+    }
+    // search in righ subtree
+    else if(value > n->value)
+    {
+        n->right = node_delete(n->right, value);
+    }
+    // found it
+    else
+    {
+        struct node* tmp;
+
+        // one child, promote right
+        if(n->left == NULL)
+        {
+            tmp = n->right;
+            free(n);
+            return tmp;
+        }
+        // one child, promote left
+        if(n->right == NULL)
+        {
+            tmp = n->left;
+            free(n);
+            return tmp;
+        }
+
+        // two children, copy minimum to this node and delete the original minimum
+        // find minimum value in right subtree
+        tmp = node_min_node_in_subtree(n->right);
+        // replace this node with it's value
+        n->value = tmp->value;
+        // delete the original which is now a duplicate
+        n->right = node_delete(n->right, tmp->value);
+
+        return tmp;
+    }
+
+    return n;
+}
+
+void node_print_inorder(struct node* n)
 {
     if(n)
     {
-        if(n->left)
-        {
-            _destroy_node(n->left);
-        }
-        if(n->right)
-        {
-            _destroy_node(n->right);
-        }
-        free(n);
+        node_print_inorder(n->left);
+        fprintf(stderr, "Node(%d)\n", n->value);
+        node_print_inorder(n->right);
     }
 }
 
-void print_tree(tree t)
+// BST tree data type
+struct tree
 {
-    if(t && t->root)
+    struct node* root;
+};
+
+// BST tree functions
+struct tree* new_tree()
+{
+    return malloc(sizeof(struct tree));
+}
+
+void tree_destroy(struct tree* t)
+{
+    node_destroy(t->root);
+    free(t);
+}
+
+void tree_insert(struct tree* t, int value)
+{
+    if(t->root == NULL)
     {
-        _print_node(t->root);
+        t->root = malloc(sizeof(struct node));
+        t->root->left = NULL;
+        t->root->right = NULL;
+        t->root->value = value;
+    }
+    else
+    {
+        node_insert(t->root, value);
     }
 }
 
-void _print_node(node n)
+void tree_delete(struct tree* t, int value)
 {
-    if(n)
-    {
-        fprintf(stdout, "%d\n", n->value);
-        _print_node(n->left);
-        _print_node(n->right);
-    }
+    node_delete(t->root, value);
+}
+
+void tree_print_inorder(struct tree* t)
+{
+    fprintf(stderr, "Tree:\n");
+    node_print_inorder(t->root);
+}
+
+
+int main(int argc, char* argv[])
+{
+    // create new tree
+    struct tree *t = new_tree();
+
+    // insert a bunch of nodes
+    tree_insert(t, 50);
+    tree_insert(t, 30);
+    tree_insert(t, 20);
+    tree_insert(t, 40);
+    tree_insert(t, 70);
+    tree_insert(t, 60);
+    tree_insert(t, 80);
+
+    // tree:
+    //         50
+    //     30      70
+    //  20   40  60   80
+
+
+    // 20->30->40->50->60->70->80
+    tree_print_inorder(t);
+
+    tree_delete(t, 20);
+    // tree:
+    //         50
+    //     30      70
+    //       40  60   80
+
+    // 30->40->50->60->70->80
+    tree_print_inorder(t);
+
+    tree_delete(t, 30);
+    // tree:
+    //         50
+    //     40      70
+    //           60   80
+
+    // 40->50->60->70->80
+    tree_print_inorder(t);
+
+    tree_delete(t, 50);
+    // tree:
+    //     60
+    // 40      70
+    //            80
+
+    // 40->60->70->80
+    tree_print_inorder(t);
+
+    tree_destroy(t);
+
+    return 0;
 }
