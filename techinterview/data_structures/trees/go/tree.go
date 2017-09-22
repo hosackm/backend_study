@@ -58,6 +58,37 @@ func (n *Node) findValue(value int) bool {
     }
 }
 
+func (n *Node) findMinNodeInSubtree() *Node {
+    if n.Left == nil {
+        return n
+    }
+    return n.Left.findMinNodeInSubtree()
+}
+
+func (n *Node) delete(value int) *Node {
+    if n == nil {
+        return nil
+    }
+    if value < n.Value {
+        n.Left = n.Left.delete(value)
+    } else if value > n.Value {
+        n.Right = n.Right.delete(value)
+    } else {
+        if n.Left == nil {
+            return n.Right
+        }
+        if n.Right == nil {
+            return n.Left
+        }
+        // two children, find the min and swap with this value
+        minnode := n.Right.findMinNodeInSubtree()
+        n.Value = minnode.Value
+        n.Right = n.Right.delete(minnode.Value)
+    }
+
+    return n
+}
+
 // return a pointer to a new tree with no root
 func NewTree() *Tree{
     return &Tree{nil}
@@ -80,8 +111,61 @@ func (t *Tree) Search(value int) bool {
     return t.Root.findValue(value)
 }
 
+func (t *Tree) Delete(value int) {
+    if t.Root != nil {
+        t.Root.delete(value)
+    }
+}
+
 // traverse a tree in-order and print a node on each newline
 func (t *Tree) Traverse() {
     fmt.Println("Tree:")
     t.Root.traverse()
+}
+
+func main() {
+    t := NewTree()
+    t.Insert(50);
+    t.Insert(30);
+    t.Insert(20);
+    t.Insert(40);
+    t.Insert(70);
+    t.Insert(60);
+    t.Insert(80);
+
+    // tree:
+    //         50
+    //     30      70
+    //  20   40  60   80
+
+
+    // 20->30->40->50->60->70->80
+    t.Traverse();
+
+    t.Delete(20);
+    // tree:
+    //         50
+    //     30      70
+    //       40  60   80
+
+    // 30->40->50->60->70->80
+    t.Traverse();
+
+    t.Delete(30);
+    // tree:
+    //         50
+    //     40      70
+    //           60   80
+
+    // 40->50->60->70->80
+    t.Traverse();
+
+    t.Delete(50);
+    // tree:
+    //     60
+    // 40      70
+    //            80
+
+    // 40->60->70->80
+    t.Traverse();
 }

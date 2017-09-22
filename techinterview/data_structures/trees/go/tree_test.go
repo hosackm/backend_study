@@ -1,6 +1,8 @@
 package main
 
-import "testing"
+import(
+    "testing"
+)
 
 func TestTreeIsEmpty(t *testing.T) {
     tree := NewTree()
@@ -95,5 +97,35 @@ func TestSearchReturnsCorrectValues(t *testing.T) {
 
     if tree.Search(19) {
         t.Errorf("A Node was found that didn't exist in a Tree")
+    }
+}
+
+func TestDeleteNodesLeavesCorrectTree(t *testing.T) {
+    tree := NewTree()
+    tree.Insert(50)
+
+    tree.Delete(17)
+    if tree.Root == nil {
+        t.Errorf("Deleted a node that shouldn't have been deleted")
+    }
+
+    tree.Insert(30)
+    tree.Insert(20)
+    tree.Insert(40)
+    tree.Insert(70)
+    tree.Insert(60)
+    tree.Insert(80)
+
+    tree.Delete(20)
+
+    if tree.Root.Left.Left != nil {
+        t.Errorf("Deleted node is still in tree")
+    }
+
+    tree.Delete(30)
+    tree.Delete(50)
+
+    if tree.Root.Value != 60 || tree.Root.Left.Value != 40 || tree.Root.Right.Value != 70 || tree.Root.Right.Right.Value != 80 {
+        t.Errorf("Deleting a node with two children screwed up the tree structure")
     }
 }
