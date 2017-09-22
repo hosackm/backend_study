@@ -58,6 +58,7 @@ func (n *Node) findValue(value int) bool {
     }
 }
 
+// find the minimum node within a node's subtree
 func (n *Node) findMinNodeInSubtree() *Node {
     if n.Left == nil {
         return n
@@ -65,6 +66,7 @@ func (n *Node) findMinNodeInSubtree() *Node {
     return n.Left.findMinNodeInSubtree()
 }
 
+// recursively traverse a node's subtree and delete a node matching value
 func (n *Node) delete(value int) *Node {
     if n == nil {
         return nil
